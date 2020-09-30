@@ -28,8 +28,91 @@
 
     <link rel="manifest" href="manifest.json" />
 
+    <!-- Si nuestra página no es una SPA debemos colocar estos metas en todos los html -->
+
     <!-- Android -->
     <meta name="theme-color" content="#3498db" />
+    <!-- IOS  -->
+    <!-- Este meta en teoría no haria falta para dispositivos con version superior a 11.4 de IOS STANDALONE -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- Estos links sirven para establecer el icono de la PWA, colocamos varios ya que el dispositivo escogerá el que mejor se adapte -->
+    <link rel="apple-touch-icon" href="img/icons/icon-192x192.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="img/icons/icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="img/icons/icon-192x192.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="167x167"
+      href="img/icons/icon-152x152.png"
+    />
+
+    <!-- SPLASH SCREEN -->
+    <link
+      href="img/icon-ios/iphone5_splash.png"
+      media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/iphone6_splash.png"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/iphoneplus_splash.png"
+      media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/iphonex_splash.png"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/iphonexr_splash.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/iphonexsmax_splash.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/ipad_splash.png"
+      media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/ipadpro1_splash.png"
+      media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/ipadpro3_splash.png"
+      media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <link
+      href="img/icon-ios/ipadpro2_splash.png"
+      media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image"
+    />
+    <!-- FIN SPLASH SCREEN -->
+    <!-- Cambiar el status bar -->
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <!-- Dar un nombre corto, innecesario si el dispositivo acepta el manifest -->
+    <meta name="apple-mobile-web-app-title" content="Twittor-IOS" />
   </head>
   <body>
     <!-- Titulo -->
