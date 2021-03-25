@@ -1,58 +1,53 @@
-
 var url = window.location.href;
 var swLocation = '/twittor/sw.js';
 
+if (navigator.serviceWorker) {
+  if (url.includes('localhost')) {
+    swLocation = '/sw.js';
+  }
 
-if ( navigator.serviceWorker ) {
-
-
-    if ( url.includes('localhost') ) {
-        swLocation = '/sw.js';
-    }
-
-
-    navigator.serviceWorker.register( swLocation );
+  navigator.serviceWorker.register(swLocation);
 }
 
-
-
-
+// REVISAR
+// Código para dar acceso a la cámara y al audio
+// navigator.getUserMedia(
+//   { audio: true, video: true },
+//   () => console.log('Good'),
+//   () => console.log('Bad')
+// );
 
 // Referencias de jQuery
 
-var titulo      = $('#titulo');
-var nuevoBtn    = $('#nuevo-btn');
-var salirBtn    = $('#salir-btn');
+var titulo = $('#titulo');
+var nuevoBtn = $('#nuevo-btn');
+var salirBtn = $('#salir-btn');
 var cancelarBtn = $('#cancel-btn');
-var postBtn     = $('#post-btn');
-var avatarSel   = $('#seleccion');
-var timeline    = $('#timeline');
+var postBtn = $('#post-btn');
+var avatarSel = $('#seleccion');
+var timeline = $('#timeline');
 
-var modal       = $('#modal');
+var modal = $('#modal');
 var modalAvatar = $('#modal-avatar');
-var avatarBtns  = $('.seleccion-avatar');
-var txtMensaje  = $('#txtMensaje');
+var avatarBtns = $('.seleccion-avatar');
+var txtMensaje = $('#txtMensaje');
 
 // El usuario, contiene el ID del hÃ©roe seleccionado
 var usuario;
 
-
-
-
 // ===== Codigo de la aplicaciÃ³n
 
 function crearMensajeHTML(mensaje, personaje) {
-
-    var content =`
+  var content = `
     <li class="animated fadeIn fast">
         <div class="avatar">
-            <img src="img/avatars/${ personaje }.jpg">
+            <img src="img/avatars/${personaje}.jpg">
         </div>
         <div class="bubble-container">
             <div class="bubble">
-                <h3>@${ personaje }</h3>
+                <h3>@${personaje}</h3>
                 <br/>
-                ${ mensaje }
+                ${mensaje}
             </div>
             
             <div class="arrow"></div>
@@ -60,86 +55,126 @@ function crearMensajeHTML(mensaje, personaje) {
     </li>
     `;
 
-    timeline.prepend(content);
-    cancelarBtn.click();
-
+  timeline.prepend(content);
+  cancelarBtn.click();
 }
-
-
 
 // Globals
-function logIn( ingreso ) {
+function logIn(ingreso) {
+  if (ingreso) {
+    nuevoBtn.removeClass('oculto');
+    salirBtn.removeClass('oculto');
+    timeline.removeClass('oculto');
+    avatarSel.addClass('oculto');
+    modalAvatar.attr('src', 'img/avatars/' + usuario + '.jpg');
+  } else {
+    nuevoBtn.addClass('oculto');
+    salirBtn.addClass('oculto');
+    timeline.addClass('oculto');
+    avatarSel.removeClass('oculto');
 
-    if ( ingreso ) {
-        nuevoBtn.removeClass('oculto');
-        salirBtn.removeClass('oculto');
-        timeline.removeClass('oculto');
-        avatarSel.addClass('oculto');
-        modalAvatar.attr('src', 'img/avatars/' + usuario + '.jpg');
-    } else {
-        nuevoBtn.addClass('oculto');
-        salirBtn.addClass('oculto');
-        timeline.addClass('oculto');
-        avatarSel.removeClass('oculto');
-
-        titulo.text('Seleccione Personaje');
-    
-    }
-
+    titulo.text('Seleccione Personaje');
+  }
 }
 
-
 // Seleccion de personaje
-avatarBtns.on('click', function() {
+avatarBtns.on('click', function () {
+  usuario = $(this).data('user');
 
-    usuario = $(this).data('user');
+  titulo.text('@' + usuario);
 
-    titulo.text('@' + usuario);
-
-    logIn(true);
-
+  logIn(true);
 });
 
 // Boton de salir
-salirBtn.on('click', function() {
-
-    logIn(false);
-
+salirBtn.on('click', function () {
+  logIn(false);
 });
 
 // Boton de nuevo mensaje
-nuevoBtn.on('click', function() {
-
-    modal.removeClass('oculto');
-    modal.animate({ 
-        marginTop: '-=1000px',
-        opacity: 1
-    }, 200 );
-
+nuevoBtn.on('click', function () {
+  modal.removeClass('oculto');
+  modal.animate(
+    {
+      marginTop: '-=1000px',
+      opacity: 1,
+    },
+    200
+  );
 });
 
 // Boton de cancelar mensaje
-cancelarBtn.on('click', function() {
-    if ( !modal.hasClass('oculto') ) {
-        modal.animate({ 
-            marginTop: '+=1000px',
-            opacity: 0
-         }, 200, function() {
-             modal.addClass('oculto');
-             txtMensaje.val('');
-         });
-    }
+cancelarBtn.on('click', function () {
+  if (!modal.hasClass('oculto')) {
+    modal.animate(
+      {
+        marginTop: '+=1000px',
+        opacity: 0,
+      },
+      200,
+      function () {
+        modal.addClass('oculto');
+        txtMensaje.val('');
+      }
+    );
+  }
 });
 
 // Boton de enviar mensaje
-postBtn.on('click', function() {
+postBtn.on('click', function () {
+  var mensaje = txtMensaje.val();
+  if (mensaje.length === 0) {
+    cancelarBtn.click();
+    return;
+  }
 
-    var mensaje = txtMensaje.val();
-    if ( mensaje.length === 0 ) {
-        cancelarBtn.click();
-        return;
-    }
+  const data = { message: mensaje, user: usuario };
 
-    crearMensajeHTML( mensaje, usuario );
+  fetch('api', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+    .then((resp) => resp.json())
+    .then((resp) => console.log('app.js', resp))
+    .catch((err) => console.log('app.js', err));
 
+  crearMensajeHTML(mensaje, usuario);
 });
+
+// Obtener mensajes del servidor
+
+const getMessages = () => {
+  return fetch('http://localhost:3000/api')
+    .then((resp) => resp.json())
+    .then((messages) =>
+      messages.forEach(({ message, user }) => crearMensajeHTML(message, user))
+    );
+};
+
+getMessages();
+
+// Detect connection changes
+
+const isOnline = () => {
+  if (navigator.onLine) {
+    const onlineToast = new mdtoast('Online', {
+      interaction: true,
+      interactionTime: 1000,
+      type: mdtoast.ERROR,
+      actionText: 'Ok!',
+    });
+    onlineToast.show();
+  } else {
+    const offlineToast = new mdtoast('Offline', {
+      interaction: true,
+      interactionTime: 1000,
+      type: mdtoast.INFO,
+      actionText: 'Ok!',
+    });
+    offlineToast.show();
+  }
+};
+
+window.addEventListener('online', isOnline);
+window.addEventListener('offline', isOnline);
